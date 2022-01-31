@@ -162,24 +162,6 @@ void test_rs_range_transformation_map() {
 
 }
 
-void test_rs_range_transformation_map_head_tail() {
-
-    std::string s;
-
-    TRY("hello"s >> map_head_tail(ascii_toupper, ascii_tolower) >> overwrite(s));                                TEST_EQUAL(s, "Hello");
-    TRY("HELLO"s >> map_head_tail(ascii_toupper, ascii_tolower) >> overwrite(s));                                TEST_EQUAL(s, "Hello");
-    TRY("hello"s >> map_head_tail(ascii_toupper) >> overwrite(s));                                               TEST_EQUAL(s, "Hello");
-    TRY("HELLO"s >> map_head_tail(ascii_toupper) >> overwrite(s));                                               TEST_EQUAL(s, "HELLO");
-    TRY("hello"s >> map_head_tail(nullptr, ascii_tolower) >> overwrite(s));                                      TEST_EQUAL(s, "hello");
-    TRY("HELLO"s >> map_head_tail(nullptr, ascii_tolower) >> overwrite(s));                                      TEST_EQUAL(s, "Hello");
-    TRY("hello"s >> passthrough >> map_head_tail(ascii_toupper, ascii_tolower) >> passthrough >> overwrite(s));  TEST_EQUAL(s, "Hello");
-    TRY("HELLO"s >> passthrough >> map_head_tail(ascii_toupper, ascii_tolower) >> passthrough >> overwrite(s));  TEST_EQUAL(s, "Hello");
-
-    s = "hello";  TRY(s << map_head_tail(ascii_toupper, ascii_tolower));  TEST_EQUAL(s, "Hello");
-    s = "HELLO";  TRY(s << map_head_tail(ascii_toupper, ascii_tolower));  TEST_EQUAL(s, "Hello");
-
-}
-
 void test_rs_range_transformation_map_if() {
 
     std::string s;

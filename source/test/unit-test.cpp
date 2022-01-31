@@ -87,7 +87,6 @@ int main(int argc, char** argv) {
     UNIT_TEST(rs_range_transformation_iterators)
     UNIT_TEST(rs_range_transformation_keys_values)
     UNIT_TEST(rs_range_transformation_map)
-    UNIT_TEST(rs_range_transformation_map_head_tail)
     UNIT_TEST(rs_range_transformation_map_if)
     UNIT_TEST(rs_range_transformation_replace)
     UNIT_TEST(rs_range_transformation_swap_pairs)
