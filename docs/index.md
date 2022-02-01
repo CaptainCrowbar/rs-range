@@ -109,7 +109,32 @@ auto top10 = sort * unique * take(10);
 v1 >> top10 >> append(v2);
 ```
 
+### Categorization
+
+* **Core algorithms** are fundamental operations that have special behaviour or otherwise don't fit into any of the other categories.
+* **Aggregation algorithms** combine multiple input elements into each output element.
+* **Combination algorithms** generate a single output range from multiple input ranges.
+* **Expansion algorithms** generate multiple output elements from each input element.
+* **Generation algorithms** create an output range without taking an input range.
+* **Permutation algorithms** return a permutation of the input range.
+* **Reduction algorithms** take an input range and return a scalar result.
+* **Selection algorithms** return a subset of the input range.
+* **Transformation algorithms** apply a one-to-one mapping from the input range to the output range.
+
 ## Algorithms reference table
+
+Columns in the table:
+
+* Category -- These are the algorithm categories listed above.
+* Algorithm -- The algorithm name.
+* Args -- The arguments taken by the algorithm, excluding the input and output ranges.
+* Pipeline -- The input and output range types, when the algorithm is used in pipeline mode.
+    * e.g. `FR -> R` indicates that the algorithm takes a range of at least forward category as input,
+        and returns a range of the same category
+* Reflex -- The input range type, when the algorithm is used in reflex mode.
+    The output in reflex mode is always a reference to the modified input.
+
+Abbreviations used:
 
 * Range categories:
     * `R` = Range (unrestricted)
@@ -146,116 +171,116 @@ v1 >> top10 >> append(v2);
     * `N` = Integer type
     * `T` = Value type of a range
 
-| Section         | Pipeline algorithm                                 | Reflex algorithm                            |
-| -------         | ------------------                                 | ----------------                            |
-| Core            | `R >> append(C&) -> R`                             |                                             |
-|                 | `R >> collect -> TRR`                              |                                             |
-|                 | `R >> collect_as<C> -> C`                          |                                             |
-|                 | `R >> each(UF) -> R`                               | `R& << each(UF)`                            |
-|                 | `PR >> each_pair(BF) -> R`                         | `PR& << each_pair(BF)`                      |
-|                 | `R >> output(OI) -> OI`                            |                                             |
-|                 | `R >> overwrite(C&) -> R`                          |                                             |
-|                 | `R >> passthrough -> R`                            | `R& << passthrough`                         |
-| Aggregation     | `R >> adjacent_difference[(BF)] -> CFR`            | `C& << adjacent_difference[(BF)]`           |
-|                 | `R >> census[(EP)] -> CPFR`                        |                                             |
-|                 | `FR >> collect_groups(BP[,BF]) -> FR`              | `C& << collect_groups(BP[,BF])`             |
-|                 | `FR >> collect_groups_by(UF[,BF]) -> FR`           | `C& << collect_groups_by(UF[,BF])`          |
-|                 | `FR >> group[(EP)] -> NFR`                         |                                             |
-|                 | `FR >> group_by(UF) -> NFR`                        |                                             |
-|                 | `FR >> group_k(N) -> NFR`                          |                                             |
-|                 | `R >> partial_sum[(BF)] -> CFR`                    | `C& << partial_sum[(BF)]`                   |
-| Combination     | `R >> compare(R[,CP]) -> bool`                     |                                             |
-|                 | `R >> compare_3way(R[,CP]) -> int`                 |                                             |
-|                 | `R >> concat(R) -> CFR`                            | `C& << concat(R)`                           |
-|                 | `R >> inner_product(R[,T,BF,BF]) -> T`             |                                             |
-|                 | `R >> interleave(R) -> CFR`                        |                                             |
-|                 | `R >> is_equal(R[,EP]) -> bool`                    |                                             |
-|                 | `R >> is_equivalent(R[,CP]) -> bool`               |                                             |
-|                 | `OR >> merge(R[,CP]) -> COFR`                      | `OC& << merge(R[,CP])`                      |
-|                 | `FR >> outer_product(FR[,BF]) -> FR`               |                                             |
-|                 | `R >> prefix(R) -> CFR`                            | `C& << prefix(R)`                           |
-|                 | `FR >> self_cross[(BF)] -> FR`                     |                                             |
-|                 | `OR >> set_difference(OR[,CP]) -> COFR`            | `OC& << set_difference(OR[,CP])`            |
-|                 | `OR >> set_difference_from(OR[,CP]) -> COFR`       | `OC& << set_difference_from(OR[,CP])`       |
-|                 | `OR >> set_intersection(OR[,CP]) -> COFR`          | `OC& << set_intersection(OR[,CP])`          |
-|                 | `OR >> set_symmetric_difference(OR[,CP]) -> COFR`  | `OC& << set_symmetric_difference(OR[,CP])`  |
-|                 | `OR >> set_union(OR[,CP]) -> COFR`                 | `OC& << set_union(OR[,CP])`                 |
-|                 | `R >> zip(R[,BF]) -> CFR`                          |                                             |
-| Expansion       | `FR >> combinations(N) -> NIR`                     |                                             |
-|                 | `R >> flat_map(UF) -> CFR`                         | `FR& << flat_map(UF)`                       |
-|                 | `NR >> flatten -> CFR`                             |                                             |
-|                 | `R >> insert_after(T) -> CFR`                      | `FR& << insert_after(T)`                    |
-|                 | `R >> insert_around(T,T) -> CFR`                   | `FR& << insert_around(T,T)`                 |
-|                 | `R >> insert_before(T) -> CFR`                     | `FR& << insert_before(T)`                   |
-|                 | `R >> insert_between(T) -> CFR`                    | `FR& << insert_between(T)`                  |
-|                 | `R >> permutations[(CP)] -> NIR`                   |                                             |
-|                 | `FR >> repeat[(N)] -> CBR`                         | `C& << repeat[(N)]`                         |
-|                 | `FR >> subsets(N) -> NIR`                          |                                             |
-| Generation      | `epsilon<T> -> RR`                                 |                                             |
-|                 | `fill(T[,N]) -> RR`                                | `R& << fill(T[,N])`                         |
-|                 | `generate(GF[,N]) -> IR`                           | `R& << generate(GF[,N])`                    |
-|                 | `iota(T[,T_or_UF[,N]]) -> FR`                      | `R& << iota(T[,T_or_UF[,N]])`               |
-|                 | `random(RD,RNG[,N]) -> IR`                         | `R& << random(RD,RNG[,N])`                  |
-|                 | `single(T) -> RR`                                  |                                             |
-| Permutation     | `R >> next_permutation[(CP)] -> TRR`               | `BR& << next_permutation[(CP)]`             |
-|                 | `R >> prev_permutation[(CP)] -> TRR`               | `BR& << prev_permutation[(CP)]`             |
-|                 | `BR >> reverse -> BR`                              | `BR& << reverse`                            |
-|                 | `R >> shuffle(RNG) -> TRR`                         | `RR& << shuffle(RNG)`                       |
-|                 | `R >> sort[(CP)] -> TRR`                           | `RR& << sort[(CP)]`                         |
-|                 | `R >> stable_sort[(CP)] -> TRR`                    | `RR& << stable_sort[(CP)]`                  |
-| Reduction       | `R >> all_of(UP) -> bool`                          |                                             |
-|                 | `R >> any_of(UP) -> bool`                          |                                             |
-|                 | `R >> count[(T)] -> size_t`                        |                                             |
-|                 | `R >> count_if(UP) -> size_t`                      |                                             |
-|                 | `R >> fold_left(T,BF) -> T`                        |                                             |
-|                 | `BR >> fold_right(T,BF) -> T`                      |                                             |
-|                 | `R >> is_empty -> bool`                            |                                             |
-|                 | `R >> is_nonempty -> bool`                         |                                             |
-|                 | `R >> is_sorted[(CP)] -> bool`                     |                                             |
-|                 | `R >> max[(CP)] -> T`                              |                                             |
-|                 | `R >> min[(CP)] -> T`                              |                                             |
-|                 | `R >> min_max[(CP)] -> pair`                       |                                             |
-|                 | `R >> none_of(UP) -> bool`                         |                                             |
-|                 | `R >> product[(T)] -> T`                           |                                             |
-|                 | `R >> reduce(BF) -> T`                             |                                             |
-|                 | `R >> sum[(T)] -> T`                               |                                             |
-| Selection       | `R >> after(T) -> CFR`                             | `C& << after(T)`                            |
-|                 | `R >> after_if(UP) -> CFR`                         | `C& << after_if(UP)`                        |
-|                 | `R >> before(T) -> CFR`                            | `C& << before(T)`                           |
-|                 | `R >> before_if(UP) -> CFR`                        | `C& << before_if(UP)`                       |
-|                 | `R >> filter(UP) -> CFR`                           | `C& << filter(UP)`                          |
-|                 | `R >> filter_out(UP) -> CFR`                       | `C& << filter_out(UP)`                      |
-|                 | `R >> from(T) -> CFR`                              | `C& << from(T)`                             |
-|                 | `R >> from_if(UP) -> CFR`                          | `C& << from_if(UP)`                         |
-|                 | `R >> not_null -> CFR`                             | `C& << not_null`                            |
-|                 | `R >> remove(T) -> CFR`                            | `C& << remove(T)`                           |
-|                 | `RR >> sample_k(N,RNG) -> TRR`                     | `C& << sample_k(N,RNG)`                     |
-|                 | `R >> sample_p(FP,RNG) -> CFR`                     | `C& << sample_p(FP,RNG)`                    |
-|                 | `RR >> sample_replace(N,RNG) -> TRR`               | `C& << sample_replace(N,RNG)`               |
-|                 | `R >> skip(N) -> CFR`                              | `C& << skip(N)`                             |
-|                 | `R >> stride(N[,N]) -> CFR`                        | `C& << stride(N[,N])`                       |
-|                 | `R >> take(N) -> CFR`                              | `C& << take(N)`                             |
-|                 | `R >> unique[(EP)] -> CFR`                         | `C& << unique[(EP)]`                        |
-|                 | `R >> until(T) -> CFR`                             | `C& << until(T)`                            |
-|                 | `R >> until_if(UP) -> CFR`                         | `C& << until_if(UP)`                        |
-| Transformation  | `R >> const_ptr<T> -> R`                           | `FR& << const_ptr<T>`                       |
-|                 | `R >> construct<T> -> R`                           |                                             |
-|                 | `R >> convert<T> -> R`                             | `FR& << convert<T>`                         |
-|                 | `R >> dereference -> R`                            |                                             |
-|                 | `R >> dynamic_ptr<T> -> R`                         | `FR& << dynamic_ptr<T>`                     |
-|                 | `R >> indexed[(N[,N])] -> CFR`                     |                                             |
-|                 | `R >> initialize<T> -> R`                          |                                             |
-|                 | `R >> iterators -> R`                              |                                             |
-|                 | `R >> keys -> R`                                   |                                             |
-|                 | `R >> map(UF) -> R`                                | `FR& << map(UF)`                            |
-|                 | `R >> map_if(UP,UF) -> R`                          | `FR& << map_if(UP,UF)`                      |
-|                 | `PR >> map_pairs(BF) -> R`                         |                                             |
-|                 | `R >> reinterpret_ptr<T> -> R`                     | `FR& << reinterpret_ptr<T>`                 |
-|                 | `R >> replace(T,T) -> R`                           | `FR& << replace(T,T)`                       |
-|                 | `R >> replace_if(UP,T) -> R`                       | `FR& << replace_if(UP,T)`                   |
-|                 | `R >> static_ptr<T> -> R`                          | `FR& << static_ptr<T>`                      |
-|                 | `PR >> swap_pairs -> PR`                           | `PC& << swap_pairs`                         |
-|                 | `R >> values -> R`                                 |                                             |
+| Category        | Algorithm                   | Args                 | Pipeline       | Reflex  |
+| --------        | ---------                   | ----                 | --------       | ------  |
+| Core            | `append`                    | `(C&)`               | `R -> R`       | _none_  |
+|                 | `collect`                   | _none_               | `R -> TRR`     | _none_  |
+|                 | `collect_as`                | `<C>`                | `R -> C`       | _none_  |
+|                 | `each`                      | `(UF)`               | `R -> R`       | `R&`    |
+|                 | `each_pair`                 | `(BF)`               | `PR -> R`      | `PR&`   |
+|                 | `output`                    | `(OI)`               | `R -> OI`      | _none_  |
+|                 | `overwrite`                 | `(C&)`               | `R -> R`       | _none_  |
+|                 | `passthrough`               | _none_               | `R -> R`       | `R&`    |
+| Aggregation     | `adjacent_difference`       | `[(BF)]`             | `R -> CFR`     | `C&`    |
+|                 | `census`                    | `[(EP)]`             | `R -> CPFR`    | _none_  |
+|                 | `collect_groups`            | `(BP[,BF])`          | `FR -> FR`     | `C&`    |
+|                 | `collect_groups_by`         | `(UF[,BF])`          | `FR -> FR`     | `C&`    |
+|                 | `group`                     | `[(EP)]`             | `FR -> NFR`    | _none_  |
+|                 | `group_by`                  | `(UF)`               | `FR -> NFR`    | _none_  |
+|                 | `group_k`                   | `(N)`                | `FR -> NFR`    | _none_  |
+|                 | `partial_sum`               | `[(BF)]`             | `R -> CFR`     | `C&`    |
+| Combination     | `compare`                   | `(R[,CP])`           | `R -> bool`    | _none_  |
+|                 | `compare_3way`              | `(R[,CP])`           | `R -> int`     | _none_  |
+|                 | `concat`                    | `(R)`                | `R -> CFR`     | `C&`    |
+|                 | `inner_product`             | `(R[,T,BF,BF])`      | `R -> T`       | _none_  |
+|                 | `interleave`                | `(R)`                | `R -> CFR`     | _none_  |
+|                 | `is_equal`                  | `(R[,EP])`           | `R -> bool`    | _none_  |
+|                 | `is_equivalent`             | `(R[,CP])`           | `R -> bool`    | _none_  |
+|                 | `merge`                     | `(R[,CP])`           | `OR -> COFR`   | `OC&`   |
+|                 | `outer_product`             | `(FR[,BF])`          | `FR -> FR`     | _none_  |
+|                 | `prefix`                    | `(R)`                | `R -> CFR`     | `C&`    |
+|                 | `self_cross`                | `[(BF)]`             | `FR -> FR`     | _none_  |
+|                 | `set_difference`            | `(OR[,CP])`          | `OR -> COFR`   | `OC&`   |
+|                 | `set_difference_from`       | `(OR[,CP])`          | `OR -> COFR`   | `OC&`   |
+|                 | `set_intersection`          | `(OR[,CP])`          | `OR -> COFR`   | `OC&`   |
+|                 | `set_symmetric_difference`  | `(OR[,CP])`          | `OR -> COFR`   | `OC&`   |
+|                 | `set_union`                 | `(OR[,CP])`          | `OR -> COFR`   | `OC&`   |
+|                 | `zip`                       | `(R[,BF])`           | `R -> CFR`     | _none_  |
+| Expansion       | `combinations`              | `(N)`                | `FR -> NIR`    | _none_  |
+|                 | `flat_map`                  | `(UF)`               | `R -> CFR`     | `FR&`   |
+|                 | `flatten`                   | _none_               | `NR -> CFR`    | _none_  |
+|                 | `insert_after`              | `(T)`                | `R -> CFR`     | `FR&`   |
+|                 | `insert_around`             | `(T,T)`              | `R -> CFR`     | `FR&`   |
+|                 | `insert_before`             | `(T)`                | `R -> CFR`     | `FR&`   |
+|                 | `insert_between`            | `(T)`                | `R -> CFR`     | `FR&`   |
+|                 | `permutations`              | `[(CP)]`             | `R -> NIR`     | _none_  |
+|                 | `repeat`                    | `[(N)]`              | `FR -> CBR`    | `C&`    |
+|                 | `subsets`                   | `(N)`                | `FR -> NIR`    | _none_  |
+| Generation      | `epsilon<T>`                | _none_               | `void -> RR`   | _none_  |
+|                 | `fill`                      | `(T[,N])`            | `void -> RR`   | `R&`    |
+|                 | `generate`                  | `(GF[,N])`           | `void -> IR`   | `R&`    |
+|                 | `iota`                      | `(T[,T_or_UF[,N]])`  | `void -> FR`   | `R&`    |
+|                 | `random`                    | `(RD,RNG[,N])`       | `void -> IR`   | `R&`    |
+|                 | `single`                    | `(T)`                | `void -> RR`   | _none_  |
+| Permutation     | `next_permutation`          | `[(CP)]`             | `R -> TRR`     | `BR&`   |
+|                 | `prev_permutation`          | `[(CP)]`             | `R -> TRR`     | `BR&`   |
+|                 | `reverse`                   | _none_               | `BR -> BR`     | `BR&`   |
+|                 | `shuffle`                   | `(RNG)`              | `R -> TRR`     | `RR&`   |
+|                 | `sort`                      | `[(CP)]`             | `R -> TRR`     | `RR&`   |
+|                 | `stable_sort`               | `[(CP)]`             | `R -> TRR`     | `RR&`   |
+| Reduction       | `all_of`                    | `(UP)`               | `R -> bool`    | _none_  |
+|                 | `any_of`                    | `(UP)`               | `R -> bool`    | _none_  |
+|                 | `count`                     | `[(T)]`              | `R -> size_t`  | _none_  |
+|                 | `count_if`                  | `(UP)`               | `R -> size_t`  | _none_  |
+|                 | `fold_left`                 | `(T,BF)`             | `R -> T`       | _none_  |
+|                 | `fold_right`                | `(T,BF)`             | `BR -> T`      | _none_  |
+|                 | `is_empty`                  | _none_               | `R -> bool`    | _none_  |
+|                 | `is_nonempty`               | _none_               | `R -> bool`    | _none_  |
+|                 | `is_sorted`                 | `[(CP)]`             | `R -> bool`    | _none_  |
+|                 | `max`                       | `[(CP)]`             | `R -> T`       | _none_  |
+|                 | `min`                       | `[(CP)]`             | `R -> T`       | _none_  |
+|                 | `min_max`                   | `[(CP)]`             | `R -> pair`    | _none_  |
+|                 | `none_of`                   | `(UP)`               | `R -> bool`    | _none_  |
+|                 | `product`                   | `[(T)]`              | `R -> T`       | _none_  |
+|                 | `reduce`                    | `(BF)`               | `R -> T`       | _none_  |
+|                 | `sum`                       | `[(T)]`              | `R -> T`       | _none_  |
+| Selection       | `after`                     | `(T)`                | `R -> CFR`     | `C&`    |
+|                 | `after_if`                  | `(UP)`               | `R -> CFR`     | `C&`    |
+|                 | `before`                    | `(T)`                | `R -> CFR`     | `C&`    |
+|                 | `before_if`                 | `(UP)`               | `R -> CFR`     | `C&`    |
+|                 | `filter`                    | `(UP)`               | `R -> CFR`     | `C&`    |
+|                 | `filter_out`                | `(UP)`               | `R -> CFR`     | `C&`    |
+|                 | `from`                      | `(T)`                | `R -> CFR`     | `C&`    |
+|                 | `from_if`                   | `(UP)`               | `R -> CFR`     | `C&`    |
+|                 | `not_null`                  | _none_               | `R -> CFR`     | `C&`    |
+|                 | `remove`                    | `(T)`                | `R -> CFR`     | `C&`    |
+|                 | `sample_k`                  | `(N,RNG)`            | `RR -> TRR`    | `C&`    |
+|                 | `sample_p`                  | `(FP,RNG)`           | `R -> CFR`     | `C&`    |
+|                 | `sample_replace`            | `(N,RNG)`            | `RR -> TRR`    | `C&`    |
+|                 | `skip`                      | `(N)`                | `R -> CFR`     | `C&`    |
+|                 | `stride`                    | `(N[,N])`            | `R -> CFR`     | `C&`    |
+|                 | `take`                      | `(N)`                | `R -> CFR`     | `C&`    |
+|                 | `unique`                    | `[(EP)]`             | `R -> CFR`     | `C&`    |
+|                 | `until`                     | `(T)`                | `R -> CFR`     | `C&`    |
+|                 | `until_if`                  | `(UP)`               | `R -> CFR`     | `C&`    |
+| Transformation  | `const_ptr`                 | `<T>`                | `R -> R`       | `FR&`   |
+|                 | `construct`                 | `<T>`                | `R -> R`       | _none_  |
+|                 | `convert`                   | `<T>`                | `R -> R`       | `FR&`   |
+|                 | `dereference`               | _none_               | `R -> R`       | _none_  |
+|                 | `dynamic_ptr`               | `<T>`                | `R -> R`       | `FR&`   |
+|                 | `indexed`                   | `[(N[,N])]`          | `R -> CFR`     | _none_  |
+|                 | `initialize`                | `<T>`                | `R -> R`       | _none_  |
+|                 | `iterators`                 | _none_               | `R -> R`       | _none_  |
+|                 | `keys`                      | _none_               | `R -> R`       | _none_  |
+|                 | `map`                       | `(UF)`               | `R -> R`       | `FR&`   |
+|                 | `map_if`                    | `(UP,UF)`            | `R -> R`       | `FR&`   |
+|                 | `map_pairs`                 | `(BF)`               | `PR -> R`      | _none_  |
+|                 | `reinterpret_ptr`           | `<T>`                | `R -> R`       | `FR&`   |
+|                 | `replace`                   | `(T,T)`              | `R -> R`       | `FR&`   |
+|                 | `replace_if`                | `(UP,T)`             | `R -> R`       | `FR&`   |
+|                 | `static_ptr`                | `<T>`                | `R -> R`       | `FR&`   |
+|                 | `swap_pairs`                | _none_               | `PR -> PR`     | `PC&`   |
+|                 | `values`                    | _none_               | `R -> R`       | _none_  |
 
 ## Algorithm details
 
