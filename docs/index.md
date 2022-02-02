@@ -137,24 +137,29 @@ Columns in the table:
 Abbreviations used:
 
 * Range categories:
-    * `R` = Range (unrestricted)
+    * `R` = Any range
     * `IR` = Input (single pass) range
     * `FR` = Forward range
     * `BR` = Bidirectional range
     * `RR` = Random access range
+* Container categories:
+    * `C` = Any STL-compatible container
+    * `FC` = Forward container
+    * `BC` = Bidirectional container
+    * `RC` = Random access container
 * Iterator categories:
-    * `I` = Iterator (unrestricted)
+    * `I` = Any iterator
     * `II` = Input iterator
     * `OI` = Output iterator
     * `FI` = Forward iterator
     * `BI` = Bidirectional iterator
     * `RI` = Random access iterator
-* Range modifiers:
-    * `C_R` = Conditional range
+* Range or container modifiers:
+    * `C_R` = Conditional range (see above)
     * `N_R` = Nested range (each element is itself a range)
     * `S_R` = Sorted range (assumed to be sorted on a comparison predicate)
     * `P_R` = Pair range (each element is a `std::pair`, or other type with `first` and `second` members)
-    * `T_R` = Temporary range
+    * `T_R` = Temporary range (see above)
 * Function types:
     * `GF` = Generator function: `f()->x`
     * `UF` = Unary function: `f(x)->y`
@@ -164,9 +169,8 @@ Abbreviations used:
     * `EP` = Equality predicate (binary predicate with equality semantics)
     * `CP` = Comparison predicate (binary predicate with less-than semantics)
     * `RD` = Random distribution: `f(rng&)->x`
-    * `RNG` = Random number engine: `f()->n`
+    * `RNG` = Random number engine: `f()->integer`
 * Other types:
-    * `C` = Container type (STL compatible)
     * `FP` = Floating point type
     * `N` = Integer type
     * `T` = Value type of a range
