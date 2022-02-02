@@ -130,7 +130,7 @@ Columns in the table:
 * Args -- The arguments taken by the algorithm, excluding the input and output ranges.
 * Pipeline -- The input and output range types, when the algorithm is used in pipeline mode.
     * e.g. `FR -> R` indicates that the algorithm takes a range of at least forward category as input,
-        and returns a range of the same category
+        and returns a range of the same category.
 * Reflex -- The input range type, when the algorithm is used in reflex mode.
     The output in reflex mode is always a reference to the modified input.
 
@@ -152,7 +152,7 @@ Abbreviations used:
 * Range modifiers:
     * `C_R` = Conditional range
     * `N_R` = Nested range (each element is itself a range)
-    * `O_R` = Ordered range (assumed to be sorted on a comparison predicate)
+    * `S_R` = Sorted range (assumed to be sorted on a comparison predicate)
     * `P_R` = Pair range (each element is a `std::pair`, or other type with `first` and `second` members)
     * `T_R` = Temporary range
 * Function types:
@@ -196,15 +196,15 @@ Abbreviations used:
 |                 | `interleave`                | `(R)`                | `R -> CFR`     | _none_  |
 |                 | `is_equal`                  | `(R[,EP])`           | `R -> bool`    | _none_  |
 |                 | `is_equivalent`             | `(R[,CP])`           | `R -> bool`    | _none_  |
-|                 | `merge`                     | `(R[,CP])`           | `OR -> COFR`   | `OC&`   |
+|                 | `merge`                     | `(R[,CP])`           | `SR -> CSFR`   | `SC&`   |
 |                 | `outer_product`             | `(FR[,BF])`          | `FR -> FR`     | _none_  |
 |                 | `prefix`                    | `(R)`                | `R -> CFR`     | `C&`    |
 |                 | `self_cross`                | `[(BF)]`             | `FR -> FR`     | _none_  |
-|                 | `set_difference`            | `(OR[,CP])`          | `OR -> COFR`   | `OC&`   |
-|                 | `set_difference_from`       | `(OR[,CP])`          | `OR -> COFR`   | `OC&`   |
-|                 | `set_intersection`          | `(OR[,CP])`          | `OR -> COFR`   | `OC&`   |
-|                 | `set_symmetric_difference`  | `(OR[,CP])`          | `OR -> COFR`   | `OC&`   |
-|                 | `set_union`                 | `(OR[,CP])`          | `OR -> COFR`   | `OC&`   |
+|                 | `set_difference`            | `(OR[,CP])`          | `SR -> CSFR`   | `SC&`   |
+|                 | `set_difference_from`       | `(OR[,CP])`          | `SR -> CSFR`   | `SC&`   |
+|                 | `set_intersection`          | `(OR[,CP])`          | `SR -> CSFR`   | `SC&`   |
+|                 | `set_symmetric_difference`  | `(OR[,CP])`          | `SR -> CSFR`   | `SC&`   |
+|                 | `set_union`                 | `(OR[,CP])`          | `SR -> CSFR`   | `SC&`   |
 |                 | `zip`                       | `(R[,BF])`           | `R -> CFR`     | _none_  |
 | Expansion       | `combinations`              | `(N)`                | `FR -> NIR`    | _none_  |
 |                 | `flat_map`                  | `(UF)`               | `R -> CFR`     | `FR&`   |
@@ -451,9 +451,9 @@ elements in the longer range will be returned consecutively once the shorter
 range is exhausted.
 
 ```c++
-OrderedRange r >> merge(OrderedRange2 r2,
-    ComparisonPredicate p = std::less) -> ConditionalForwardOrderedRange;
-OrderedContainer& c << merge(OrderedRange2 r2,
+SortedRange r >> merge(SortedRange2 r2,
+    ComparisonPredicate p = std::less) -> ConditionalForwardSortedRange;
+SortedContainer& c << merge(SortedRange2 r2,
     ComparisonPredicate p = std::less);
 ```
 
@@ -473,25 +473,25 @@ varying faster than the first; the output has `n*m` elements. The
 itself.
 
 ```c++
-OrderedRange r >> set_difference(OrderedRange2 r2,
-    ComparisonPredicate p = std::less) -> ConditionalForwardOrderedRange;
-OrderedRange r >> set_difference_from(OrderedRange2 r2,
-    ComparisonPredicate p = std::less) -> ConditionalForwardOrderedRange;
-OrderedRange r >> set_intersection(OrderedRange2 r2,
-    ComparisonPredicate p = std::less) -> ConditionalForwardOrderedRange;
-OrderedRange r >> set_symmetric_difference(OrderedRange2 r2,
-    ComparisonPredicate p = std::less) -> ConditionalForwardOrderedRange;
-OrderedRange r >> set_union(OrderedRange2 r2,
-    ComparisonPredicate p = std::less) -> ConditionalForwardOrderedRange;
-OrderedContainer& c << set_difference(OrderedRange2 r2,
+SortedRange r >> set_difference(SortedRange2 r2,
+    ComparisonPredicate p = std::less) -> ConditionalForwardSortedRange;
+SortedRange r >> set_difference_from(SortedRange2 r2,
+    ComparisonPredicate p = std::less) -> ConditionalForwardSortedRange;
+SortedRange r >> set_intersection(SortedRange2 r2,
+    ComparisonPredicate p = std::less) -> ConditionalForwardSortedRange;
+SortedRange r >> set_symmetric_difference(SortedRange2 r2,
+    ComparisonPredicate p = std::less) -> ConditionalForwardSortedRange;
+SortedRange r >> set_union(SortedRange2 r2,
+    ComparisonPredicate p = std::less) -> ConditionalForwardSortedRange;
+SortedContainer& c << set_difference(SortedRange2 r2,
     ComparisonPredicate p = std::less);
-OrderedContainer& c << set_difference_from(OrderedRange2 r2,
+SortedContainer& c << set_difference_from(SortedRange2 r2,
     ComparisonPredicate p = std::less);
-OrderedContainer& c << set_intersection(OrderedRange2 r2,
+SortedContainer& c << set_intersection(SortedRange2 r2,
     ComparisonPredicate p = std::less);
-OrderedContainer& c << set_symmetric_difference(OrderedRange2 r2,
+SortedContainer& c << set_symmetric_difference(SortedRange2 r2,
     ComparisonPredicate p = std::less);
-OrderedContainer& c << set_union(OrderedRange2 r2,
+SortedContainer& c << set_union(SortedRange2 r2,
     ComparisonPredicate p = std::less);
 ```
 

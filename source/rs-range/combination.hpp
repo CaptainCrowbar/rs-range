@@ -304,24 +304,24 @@ namespace RS::Range {
 
     // merge
 
-    template <typename OrderedRange2, typename ComparisonPredicate>
+    template <typename SortedRange2, typename ComparisonPredicate>
     struct MergeObject:
-    AlgorithmBase<MergeObject<OrderedRange2, ComparisonPredicate>> {
-        Detail::AsRange<const OrderedRange2> range;
+    AlgorithmBase<MergeObject<SortedRange2, ComparisonPredicate>> {
+        Detail::AsRange<const SortedRange2> range;
         ComparisonPredicate comp;
-        MergeObject(const OrderedRange2& r, const ComparisonPredicate& c): range(r), comp(c) {}
+        MergeObject(const SortedRange2& r, const ComparisonPredicate& c): range(r), comp(c) {}
     };
 
-    template <typename OrderedRange1, typename OrderedRange2, typename ComparisonPredicate>
+    template <typename SortedRange1, typename SortedRange2, typename ComparisonPredicate>
     class MergeIterator:
-    public TL::ForwardIterator<MergeIterator<OrderedRange1, OrderedRange2, ComparisonPredicate>, const TL::RangeValue<OrderedRange1>> {
+    public TL::ForwardIterator<MergeIterator<SortedRange1, SortedRange2, ComparisonPredicate>, const TL::RangeValue<SortedRange1>> {
     public:
-        static_assert(std::is_same<TL::RangeValue<OrderedRange1>, TL::RangeValue<OrderedRange2>>::value);
-        using left_iterator = TL::RangeIterator<const OrderedRange1>;
-        using right_iterator = TL::RangeIterator<const OrderedRange2>;
-        using iterator_category = Detail::CommonCategory<OrderedRange1, OrderedRange2, std::forward_iterator_tag>;
-        using left_value = TL::RangeValue<OrderedRange1>;
-        using right_value = TL::RangeValue<OrderedRange2>;
+        static_assert(std::is_same<TL::RangeValue<SortedRange1>, TL::RangeValue<SortedRange2>>::value);
+        using left_iterator = TL::RangeIterator<const SortedRange1>;
+        using right_iterator = TL::RangeIterator<const SortedRange2>;
+        using iterator_category = Detail::CommonCategory<SortedRange1, SortedRange2, std::forward_iterator_tag>;
+        using left_value = TL::RangeValue<SortedRange1>;
+        using right_value = TL::RangeValue<SortedRange2>;
         using predicate_type = std::function<bool(const left_value&, const right_value&)>;
         MergeIterator() = default;
         MergeIterator(left_iterator b1, left_iterator e1, right_iterator b2, right_iterator e2, ComparisonPredicate p):
@@ -348,30 +348,30 @@ namespace RS::Range {
         void update() { left_ = it1_ != end1_ && (it2_ == end2_ || comp_(*it1_, *it2_)); }
     };
 
-    template <typename OrderedRange1, typename OrderedRange2, typename ComparisonPredicate>
-    TL::Irange<MergeIterator<OrderedRange1, OrderedRange2, ComparisonPredicate>>
-    operator>>(const OrderedRange1& lhs, MergeObject<OrderedRange2, ComparisonPredicate> rhs) {
+    template <typename SortedRange1, typename SortedRange2, typename ComparisonPredicate>
+    TL::Irange<MergeIterator<SortedRange1, SortedRange2, ComparisonPredicate>>
+    operator>>(const SortedRange1& lhs, MergeObject<SortedRange2, ComparisonPredicate> rhs) {
         auto r = Detail::as_range(lhs);
         auto b1 = r.begin(), e1 = r.end();
         auto b2 = rhs.range.begin(), e2 = rhs.range.end();
         return {{b1, e1, b2, e2, rhs.comp}, {e1, e1, e2, e2, rhs.comp}};
     }
 
-    template <typename Container, typename OrderedRange2, typename ComparisonPredicate>
-    Container& operator<<(Container& lhs, MergeObject<OrderedRange2, ComparisonPredicate> rhs) {
+    template <typename Container, typename SortedRange2, typename ComparisonPredicate>
+    Container& operator<<(Container& lhs, MergeObject<SortedRange2, ComparisonPredicate> rhs) {
         Container temp;
         std::merge(lhs.begin(), lhs.end(), rhs.range.begin(), rhs.range.end(), append(temp), rhs.comp);
         lhs = std::move(temp);
         return lhs;
     }
 
-    template <typename OrderedRange2>
-    inline MergeObject<OrderedRange2, std::less<>> merge(OrderedRange2& r) {
+    template <typename SortedRange2>
+    inline MergeObject<SortedRange2, std::less<>> merge(SortedRange2& r) {
         return {r, {}};
     }
 
-    template <typename OrderedRange2, typename ComparisonPredicate>
-    inline MergeObject<OrderedRange2, ComparisonPredicate> merge(OrderedRange2& r, ComparisonPredicate p) {
+    template <typename SortedRange2, typename ComparisonPredicate>
+    inline MergeObject<SortedRange2, ComparisonPredicate> merge(SortedRange2& r, ComparisonPredicate p) {
         return {r, p};
     }
 
@@ -505,26 +505,26 @@ namespace RS::Range {
         static constexpr bool both = true;
     };
 
-    template <typename OrderedRange2, typename ComparisonPredicate, typename SetTraits>
+    template <typename SortedRange2, typename ComparisonPredicate, typename SetTraits>
     struct SetOperationObject:
-    AlgorithmBase<SetOperationObject<OrderedRange2, ComparisonPredicate, SetTraits>> {
-        Detail::AsRange<const OrderedRange2> range;
+    AlgorithmBase<SetOperationObject<SortedRange2, ComparisonPredicate, SetTraits>> {
+        Detail::AsRange<const SortedRange2> range;
         ComparisonPredicate comp;
-        SetOperationObject(const OrderedRange2& r): range(r), comp() {}
-        SetOperationObject(const OrderedRange2& r, const ComparisonPredicate& c): range(r), comp(c) {}
+        SetOperationObject(const SortedRange2& r): range(r), comp() {}
+        SetOperationObject(const SortedRange2& r, const ComparisonPredicate& c): range(r), comp(c) {}
     };
 
-    template <typename OrderedRange1, typename OrderedRange2, typename ComparisonPredicate, typename SetTraits>
+    template <typename SortedRange1, typename SortedRange2, typename ComparisonPredicate, typename SetTraits>
     class SetOperationIterator:
-    public TL::ForwardIterator<SetOperationIterator<OrderedRange1, OrderedRange2, ComparisonPredicate, SetTraits>,
-        const TL::RangeValue<OrderedRange1>> {
+    public TL::ForwardIterator<SetOperationIterator<SortedRange1, SortedRange2, ComparisonPredicate, SetTraits>,
+        const TL::RangeValue<SortedRange1>> {
     public:
-        static_assert(std::is_same<TL::RangeValue<OrderedRange1>, TL::RangeValue<OrderedRange2>>::value);
-        using left_iterator = TL::RangeIterator<const OrderedRange1>;
-        using right_iterator = TL::RangeIterator<const OrderedRange2>;
-        using iterator_category = Detail::CommonCategory<OrderedRange1, OrderedRange2, std::forward_iterator_tag>;
-        using left_value = TL::RangeValue<OrderedRange1>;
-        using right_value = TL::RangeValue<OrderedRange2>;
+        static_assert(std::is_same<TL::RangeValue<SortedRange1>, TL::RangeValue<SortedRange2>>::value);
+        using left_iterator = TL::RangeIterator<const SortedRange1>;
+        using right_iterator = TL::RangeIterator<const SortedRange2>;
+        using iterator_category = Detail::CommonCategory<SortedRange1, SortedRange2, std::forward_iterator_tag>;
+        using left_value = TL::RangeValue<SortedRange1>;
+        using right_value = TL::RangeValue<SortedRange2>;
         using predicate_type = std::function<bool(const left_value&, const right_value&)>;
         SetOperationIterator() = default;
         SetOperationIterator(left_iterator b1, left_iterator e1, right_iterator b2, right_iterator e2, ComparisonPredicate p):
@@ -560,72 +560,72 @@ namespace RS::Range {
         }
     };
 
-    template <typename OrderedRange1, typename OrderedRange2, typename ComparisonPredicate, typename SetTraits>
-    TL::Irange<SetOperationIterator<OrderedRange1, OrderedRange2, ComparisonPredicate, SetTraits>>
-    operator>>(const OrderedRange1& lhs, SetOperationObject<OrderedRange2, ComparisonPredicate, SetTraits> rhs) {
+    template <typename SortedRange1, typename SortedRange2, typename ComparisonPredicate, typename SetTraits>
+    TL::Irange<SetOperationIterator<SortedRange1, SortedRange2, ComparisonPredicate, SetTraits>>
+    operator>>(const SortedRange1& lhs, SetOperationObject<SortedRange2, ComparisonPredicate, SetTraits> rhs) {
         auto r = Detail::as_range(lhs);
         auto b1 = r.begin(), e1 = r.end();
         auto b2 = rhs.range.begin(), e2 = rhs.range.end();
         return {{b1, e1, b2, e2, rhs.comp}, {e1, e1, e2, e2, rhs.comp}};
     }
 
-    template <typename Container, typename OrderedRange2, typename ComparisonPredicate, typename SetTraits>
-    Container& operator<<(Container& lhs, SetOperationObject<OrderedRange2, ComparisonPredicate, SetTraits> rhs) {
+    template <typename Container, typename SortedRange2, typename ComparisonPredicate, typename SetTraits>
+    Container& operator<<(Container& lhs, SetOperationObject<SortedRange2, ComparisonPredicate, SetTraits> rhs) {
         Container temp;
         lhs >> rhs >> append(temp);
         lhs = std::move(temp);
         return lhs;
     }
 
-    template <typename OrderedRange2>
-    inline SetOperationObject<OrderedRange2, std::less<>, SetDifferenceTraits> set_difference(OrderedRange2& r) {
+    template <typename SortedRange2>
+    inline SetOperationObject<SortedRange2, std::less<>, SetDifferenceTraits> set_difference(SortedRange2& r) {
         return {r};
     }
 
-    template <typename OrderedRange2, typename ComparisonPredicate>
-    inline SetOperationObject<OrderedRange2, ComparisonPredicate, SetDifferenceTraits> set_difference(OrderedRange2& r,
+    template <typename SortedRange2, typename ComparisonPredicate>
+    inline SetOperationObject<SortedRange2, ComparisonPredicate, SetDifferenceTraits> set_difference(SortedRange2& r,
             ComparisonPredicate p) {
         return {r, p};
     }
 
-    template <typename OrderedRange2>
-    inline SetOperationObject<OrderedRange2, std::less<>, SetDifferenceFromTraits> set_difference_from(OrderedRange2& r) {
+    template <typename SortedRange2>
+    inline SetOperationObject<SortedRange2, std::less<>, SetDifferenceFromTraits> set_difference_from(SortedRange2& r) {
         return {r};
     }
 
-    template <typename OrderedRange2, typename ComparisonPredicate>
-    inline SetOperationObject<OrderedRange2, ComparisonPredicate, SetDifferenceFromTraits> set_difference_from(OrderedRange2& r, ComparisonPredicate p) {
+    template <typename SortedRange2, typename ComparisonPredicate>
+    inline SetOperationObject<SortedRange2, ComparisonPredicate, SetDifferenceFromTraits> set_difference_from(SortedRange2& r, ComparisonPredicate p) {
         return {r, p};
     }
 
-    template <typename OrderedRange2>
-    inline SetOperationObject<OrderedRange2, std::less<>, SetIntersectionTraits> set_intersection(OrderedRange2& r) {
+    template <typename SortedRange2>
+    inline SetOperationObject<SortedRange2, std::less<>, SetIntersectionTraits> set_intersection(SortedRange2& r) {
         return {r};
     }
 
-    template <typename OrderedRange2, typename ComparisonPredicate>
-    inline SetOperationObject<OrderedRange2, ComparisonPredicate, SetIntersectionTraits> set_intersection(OrderedRange2& r,
+    template <typename SortedRange2, typename ComparisonPredicate>
+    inline SetOperationObject<SortedRange2, ComparisonPredicate, SetIntersectionTraits> set_intersection(SortedRange2& r,
             ComparisonPredicate p) {
         return {r, p};
     }
 
-    template <typename OrderedRange2>
-    inline SetOperationObject<OrderedRange2, std::less<>, SetSymmetricDifferenceTraits> set_symmetric_difference(OrderedRange2& r) {
+    template <typename SortedRange2>
+    inline SetOperationObject<SortedRange2, std::less<>, SetSymmetricDifferenceTraits> set_symmetric_difference(SortedRange2& r) {
         return {r};
     }
 
-    template <typename OrderedRange2, typename ComparisonPredicate>
-    inline SetOperationObject<OrderedRange2, ComparisonPredicate, SetSymmetricDifferenceTraits> set_symmetric_difference(OrderedRange2& r, ComparisonPredicate p) {
+    template <typename SortedRange2, typename ComparisonPredicate>
+    inline SetOperationObject<SortedRange2, ComparisonPredicate, SetSymmetricDifferenceTraits> set_symmetric_difference(SortedRange2& r, ComparisonPredicate p) {
         return {r, p};
     }
 
-    template <typename OrderedRange2>
-    inline SetOperationObject<OrderedRange2, std::less<>, SetUnionTraits> set_union(OrderedRange2& r) {
+    template <typename SortedRange2>
+    inline SetOperationObject<SortedRange2, std::less<>, SetUnionTraits> set_union(SortedRange2& r) {
         return {r};
     }
 
-    template <typename OrderedRange2, typename ComparisonPredicate>
-    inline SetOperationObject<OrderedRange2, ComparisonPredicate, SetUnionTraits> set_union(OrderedRange2& r, ComparisonPredicate p) {
+    template <typename SortedRange2, typename ComparisonPredicate>
+    inline SetOperationObject<SortedRange2, ComparisonPredicate, SetUnionTraits> set_union(SortedRange2& r, ComparisonPredicate p) {
         return {r, p};
     }
 
