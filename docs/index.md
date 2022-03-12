@@ -4,12 +4,17 @@ By Ross Smith
 
 _[GitHub repository](https://github.com/CaptainCrowbar/rs-range)_
 
-## Overview
-
 ```c++
 #include "rs-range.hpp"
 namespace RS::Range;
 ```
+
+## Contents
+
+* TOC
+{:toc}
+
+## Overview
 
 This is my range algorithms library.
 
@@ -23,8 +28,6 @@ Dependencies:
 * [My format library](https://github.com/CaptainCrowbar/rs-format)
 * [My template library](https://github.com/CaptainCrowbar/rs-tl)
 * [My unit test library](https://github.com/CaptainCrowbar/rs-unit-test)
-
-## Overview
 
 ### Pipeline algorithms
 
