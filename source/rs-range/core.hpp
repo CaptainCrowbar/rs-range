@@ -13,6 +13,10 @@
 
 namespace RS::Range {
 
+    using TL::append;
+    using TL::overwrite;
+    using TL::npos;
+
     namespace Detail {
 
         template <typename T> constexpr bool is_iterator_category =
@@ -148,11 +152,6 @@ namespace RS::Range {
         }
 
     }
-
-    static constexpr size_t npos = std::string::npos;
-
-    using TL::append;
-    using TL::overwrite;
 
     template <typename Range, typename Container>
     const Range& operator>>(const Range& lhs, TL::AppendIterator<Container> rhs) {
